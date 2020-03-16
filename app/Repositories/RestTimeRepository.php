@@ -79,6 +79,7 @@ class RestTimeRepository
         $timeEnd = Carbon::createFromTime(explode(':', $data['end'])[0], explode(':', $data['end'])[1]);
         $limitTimes = RestGroup::find($id)->restSetup()->get(['start', 'end']);
         $timeStatus = $this->judgeTime($timeStart, $timeEnd, $limitTimes);
+        dd($timeStatus);
         $checkExists = RestGroup::find($id)
             ->shifts()->where(function ($query) use ($data) {
                 $query->where('work_on', '>=', $data['start'])
@@ -92,11 +93,12 @@ class RestTimeRepository
 
     private function judgeTime($timeStart, $timeEnd, $limitTimes)
     {
+        dd($timeStart, $timeEnd, $limitTimes);
         if ($timeStart > $timeEnd || $timeStart == $timeEnd) {
             return false;
-        }
+        }     
         foreach ($limitTimes as $key => $limitTime){
-            $start = Carbon::parse($limitTime->start);
+            $start = Carbon::parse($limitTime->start);    
             $end =  Carbon::parse($limitTime->end);
             if($timeStart->between($start, $end, false) || $timeEnd->between($start, $end, false) || ($timeStart < $start && $timeEnd > $start)){
                 return false;
