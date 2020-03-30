@@ -85,7 +85,7 @@
     let lastPage;
     const getRestTimeData = (page = 1) => {
         const amount = $('#amount').val();   
-        axios.get('{{ route('rest-data') }}', {
+        axios.get("{{ route('rest-data') }}", {
             params: {
                 amount,
                 page,

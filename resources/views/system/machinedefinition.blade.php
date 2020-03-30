@@ -113,7 +113,7 @@
 
     const MachineDefinitionIndex = (page = 1) => {
         const amount = $('#amount').val();
-        axios.get('{{ route('MachineDefinitionIndex') }}',{
+        axios.get("{{ route('MachineDefinitionIndex') }}",{
             params: {
                 amount,
                 page,
@@ -150,7 +150,7 @@
                 next:'>',
                 initiateStartPageClick: false,
                 onPageClick: function (event, page) {
-                    getTechRoutingIndex(page)
+                    MachineDefinitionIndex(page)
                 }
             });
         });

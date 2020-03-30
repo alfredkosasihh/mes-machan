@@ -144,7 +144,7 @@
                                         ? `<button type="button" class="btn btn-secondary btn-xs" onclick="workDate()">休假</button>
                                             <div id="work-time"></div>`
                                         : `<button type="button" class="btn btn-success btn-xs" onclick="workDate()">標準班別</button>
-                                            <div id="work-time">08:00 ~ 17:20</div>`}
+                                            <div id="work-time">08:00 ~ 17:10</div>`}
                                     </div>
                                 </span>
                             </td>

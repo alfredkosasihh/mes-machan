@@ -157,7 +157,7 @@ let lastPage;
                 next:'>',
                 initiateStartPageClick: false,
                 onPageClick: function (event, page) {
-                    getTechRoutingIndex(page)
+                    ProcessingTimeIndex(page)
                 }
             });
         });

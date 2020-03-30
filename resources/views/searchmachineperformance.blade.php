@@ -113,8 +113,10 @@
                                             <option disabled selected>---請選擇---</option>
                                             <option value="訂單開始">訂單開始</option>
                                             <option value="訂單結束">訂單結束</option>
+                                            <option value="外部停止">外部停止</option>
                                             <option value="開機">開機</option>
                                             <option value="關機">關機</option>
+                                            <option value="X伺服馬達異常">X伺服馬達異常</option>
                                             <option value="二次元異常開始">二次元異常開始</option>
                                             <option value="二次元異常結束">二次元異常結束</option>
                                             <option value="送料異常開始">送料異常開始</option>

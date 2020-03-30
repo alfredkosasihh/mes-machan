@@ -121,7 +121,7 @@
         }
         const MachineCategoryIndex = (page = 1) => {
         const amount = $('#amount').val();
-        axios.get('{{ route('MachineCategoryIndex') }}',{
+        axios.get("{{ route('MachineCategoryIndex') }}",{
             params: {
                 amount,
                 page,
@@ -160,7 +160,7 @@
                 next:'>',
                 initiateStartPageClick: false,
                 onPageClick: function (event, page) {
-                    getTechRoutingIndex(page)
+                    MachineCategoryIndex(page)
                 }
             });
         });

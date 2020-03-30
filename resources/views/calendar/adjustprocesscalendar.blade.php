@@ -156,6 +156,7 @@
 
         const makeYearCalendar = (calendarYear, month) => {
             const monthText = ~~month + 1;
+            let titleMonth = monthText > 9 ? monthText : `0${monthText}`;
             const start_date = new Date(calendarYear, month, 1);
             const start_weekday = start_date.getDay();
             let endDay = arrEnddays[month];
@@ -166,7 +167,9 @@
             (month == 1 && isLeapYear(calendarYear)) ? endDay = 29 : endDay;
             strYearTable = `
                 <div id='calendar-title'>
-                    <span id="calendar-year">${calendarYear} 年 ${monthText} 月</span>
+                    <img src="{{ asset('img/prev.png') }}" alt="" id="prev" onclick="prev()">
+                    <span id="calendar-year">${calendarYear} 年 ${titleMonth} 月</span>
+                    <img src="{{ asset('img/next.png') }}" alt="" id="next" onclick="next()">
                 </div>
             `;
             strYearTable += "<div class='month-container'>";
@@ -184,12 +187,12 @@
                         strYearTable += `
                             <td class="date-text">
                                 <span id='${calendarYear}-${monthText}-${day}'>${day}日
-                                    <div>
+                                    <div class="work-option">
                                         ${(i == 0 || i == 6)
                                         ? `<button type="button" class="btn btn-secondary btn-xs holiday-num" onclick="workDate()">休假</button>
                                             <div id="work-time"></div>`
                                         : `<button type="button" class="btn btn-success btn-xs default-num" onclick="workDate()">標準班別</button>
-                                            <div id="work-time">08:00 ~ 17:20</div>`}
+                                            <div id="work-time">08:00 ~ 17:10</div>`}
                                     </div>
                                 </span>
                             </td>
@@ -207,7 +210,10 @@
             divCalendar.innerHTML = strYearTable;
         }
         makeYearCalendar('{{ $year }}', '{{ $month -1}}');
-
+        let currentYear = "{{ $year }}";
+        let currentMonth = "{{ $month - 1}}";
+        let resourceId = "{{ $resourceId }}";
+    
         const getResourceData = () => {
             axios.get("{{ route('adjust-process-calendar') }}" + location.search)
                 .then(({ data }) => {
@@ -223,6 +229,96 @@
                 });
         }
         getResourceData();
+
+        const getProcessData = (year, month, resourceId) => {   
+            const textMonth = ~~month + 1;
+            return axios.get("{{ route('getprocesscalendar') }}", {
+                params: {
+                    year,
+                    month: textMonth,
+                    resourceId: $('#sel-org').val() || resourceId,
+                }
+            });
+        }
+
+        const getCompanyData = (year, month) => {
+            const textMonth = ~~month + 1;
+            return axios.get("{{ route('getcalendar') }}", {
+                params: {
+                    year,
+                    month: textMonth
+                }
+            });
+        }
+
+        const getCalendarTotals = (year, month, resourceId) => {
+            axios.get("{{ route('work-data') }}", {
+                params: {
+                    year: year,
+                    month: month,
+                    resourceId: $('#sel-org').val() || resourceId,
+                }
+            })
+            .then(({ data }) => {
+                $('#work_days').text(data.workDays);
+                $('#work_over_days').text(data.workOverDays);
+                $('#adjust_week_days').text(data.adjustWeek);
+                $('#work_times').text(data.workTime);
+                $('#work_over_times').text(data.workOverTime);
+            });
+        }
+
+        const prev = () => {
+            $getCurrentMonth = document.getElementById('sel-org');
+            
+            $getCurrentMonth.addEventListener("change", function() {
+                currentMonth = 0; 
+            });
+            
+            currentMonth--;
+            (currentMonth < 0) && (currentYear--) && (currentMonth = 11);
+            $('.work-option').attr('style', 'display: none;');
+            const company = getCompanyData(currentYear,currentMonth);
+            const process = getProcessData(currentYear,currentMonth, resourceId);
+            makeYearCalendar(currentYear, currentMonth);
+            company.then(function(company) {
+                company.data.forEach((date) => {
+                    renderCalendarDate(date);
+                });
+            });
+            
+            process.then(function(process) {
+                process.data.forEach((date) => {
+                    renderCalendarDate(date);
+                });
+            });
+            getCalendarTotals(currentYear, currentMonth, resourceId);
+        }
+
+        const next = () => {
+            $getCurrentMonth = document.getElementById('sel-org');
+            $getCurrentMonth.addEventListener("change", function() {
+                currentMonth = 0;
+            });
+            currentMonth++;
+            (currentMonth > 11) && (currentYear++) && (currentMonth = 0);
+            $('.work-option').attr('style', 'display: none;');
+            const company =getCompanyData(currentYear,currentMonth);
+            const process = getProcessData(currentYear,currentMonth, resourceId);
+            makeYearCalendar(currentYear, currentMonth);
+            company.then(function(company) {
+                company.data.forEach((date) => {
+                    renderCalendarDate(date);
+                });
+            });
+            
+            process.then(function(process) {
+                process.data.forEach((date) => {
+                    renderCalendarDate(date);
+                });
+            });
+            getCalendarTotals(currentYear, currentMonth, resourceId);
+        }
 
         const workDate = () => {
             const clickDate = $(event.target).parent().parent().attr('id');
@@ -301,14 +397,12 @@
             });
         }
 
-        const renderCalendarDate = (data) => {
-            
+        const renderCalendarDate = (data) => {   
             const date = data.date.split('-').map((val) => ~~val).join('-');
             const element = $(`#${date} .btn`);
             switch (~~data.status) {
                 case 1:
-                let { setup_shift } = data;
-                
+                    let { setup_shift } = data;
                     start = setup_shift.work_on.split(':').slice(0, 2).join(':');
                     end = setup_shift.work_off.split(':').slice(0, 2).join(':');
                     element.attr('class', 'btn btn-danger btn-xs');
@@ -329,27 +423,6 @@
             }
         }
 
-        const getCompanyData = (year, month) => {
-            const textMonth = ~~month + 1;
-            return axios.get("{{ route('getcalendar') }}", {
-                params: {
-                    year,
-                    month: textMonth
-                }
-            });
-        }
-
-        const getProcessData = (year, month, resourceId) => {
-            const textMonth = ~~month + 1;
-            return axios.get("{{ route('getprocesscalendar') }}", {
-                params: {
-                    year: '{{ $year }}',
-                    month: '{{ $month }}',
-                    resourceId: $('#sel-org').val() || resourceId,
-                }
-            });
-        }
-
         const initCalendar = async () => {
             const company = await getCompanyData('{{ $year }}', '{{ $month -1 }}');
             const process = await getProcessData('{{ $year }}', '{{ $month -1 }}', '{{ $resourceId }}');
@@ -367,7 +440,6 @@
         const changeResourceData = async () => {
             const company = await getCompanyData('{{ $year }}', '{{ $month -1 }}');
             const process = await getProcessData('{{ $year }}', '{{ $month -1 }}', '{{ $resourceId }}');
-
             makeYearCalendar('{{ $year }}', '{{ $month -1}}');
             company.data.forEach((date) => {
                 renderCalendarDate(date);
