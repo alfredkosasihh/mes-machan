@@ -136,7 +136,7 @@
     let firstb = true;
     let firstc = true;
     const getRestId = () => {
-        axios.get('{{ route('rest-group') }}', {
+        axios.get("{{ route('rest-group') }}", {
             params: {
                 value: $('#work-type').val()
             }
@@ -161,7 +161,7 @@
    
     const getMachineId = () => {
         
-        axios.get('{{ route('getMachineData') }}', {
+        axios.get("{{ route('getMachineData') }}", {
         })
         .then(({ data }) => {
 
@@ -183,7 +183,7 @@
 
     const getApsProcessCode = () => {
         
-        axios.get('{{ route('getApsData') }}', {
+        axios.get("{{ route('getApsData') }}", {
         })
         .then(({ data }) => {
 

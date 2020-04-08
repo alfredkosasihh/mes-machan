@@ -212,8 +212,11 @@
         makeYearCalendar('{{ $year }}', '{{ $month -1}}');
         let currentYear = "{{ $year }}";
         let currentMonth = "{{ $month - 1}}";
+        let thisYear = "{{ $year }}";
+        let thisMonth = "{{ $month - 1}}";
         let resourceId = "{{ $resourceId }}";
-    
+        let $getCurrentStatus = document.getElementById('sel-org');
+
         const getResourceData = () => {
             axios.get("{{ route('adjust-process-calendar') }}" + location.search)
                 .then(({ data }) => {
@@ -222,9 +225,7 @@
                             <option value="${data.id}">${data.machine_name}</option>
                         `);
                     });
-                    $('#sel-org').val('{{ $resourceId }}');
-                    const { machine_name }  = _.find(data, ['id', ~~'{{ $resourceId }}']);
-                    
+                    const { machine_name }  = _.find(data, ['id', ~~{data}.data[0].id]);
                     $('#panel-title').text(machine_name);
                 });
         }
@@ -269,17 +270,17 @@
         }
 
         const prev = () => {
-            $getCurrentMonth = document.getElementById('sel-org');
             
-            $getCurrentMonth.addEventListener("change", function() {
-                currentMonth = 0; 
+            $getCurrentStatus.addEventListener("change", function() {         
+                currentYear = thisYear;
+                currentMonth = thisMonth; 
             });
-            
+          
             currentMonth--;
             (currentMonth < 0) && (currentYear--) && (currentMonth = 11);
             $('.work-option').attr('style', 'display: none;');
             const company = getCompanyData(currentYear,currentMonth);
-            const process = getProcessData(currentYear,currentMonth, resourceId);
+            const process = getProcessData(currentYear,currentMonth, $getCurrentStatus.value);
             makeYearCalendar(currentYear, currentMonth);
             company.then(function(company) {
                 company.data.forEach((date) => {
@@ -292,19 +293,20 @@
                     renderCalendarDate(date);
                 });
             });
-            getCalendarTotals(currentYear, currentMonth, resourceId);
+            getCalendarTotals(currentYear, ~~currentMonth+1, $getCurrentStatus.value);
         }
 
         const next = () => {
-            $getCurrentMonth = document.getElementById('sel-org');
-            $getCurrentMonth.addEventListener("change", function() {
-                currentMonth = 0;
+
+            $getCurrentStatus.addEventListener("change", function() {
+                currentYear = thisYear;
+                currentMonth = thisMonth;
             });
             currentMonth++;
             (currentMonth > 11) && (currentYear++) && (currentMonth = 0);
             $('.work-option').attr('style', 'display: none;');
-            const company =getCompanyData(currentYear,currentMonth);
-            const process = getProcessData(currentYear,currentMonth, resourceId);
+            const company = getCompanyData(currentYear,currentMonth);
+            const process = getProcessData(currentYear,currentMonth, $getCurrentStatus.value);
             makeYearCalendar(currentYear, currentMonth);
             company.then(function(company) {
                 company.data.forEach((date) => {
@@ -317,7 +319,7 @@
                     renderCalendarDate(date);
                 });
             });
-            getCalendarTotals(currentYear, currentMonth, resourceId);
+            getCalendarTotals(currentYear, ~~currentMonth+1, $getCurrentStatus.value);
         }
 
         const workDate = () => {
@@ -390,7 +392,7 @@
             })
             .then(function ({ data }) {                         
                 renderCalendarDate(data.data);
-                getCalendarTotal();
+                getCalendarTotals(currentYear, ~~currentMonth+1, $getCurrentStatus.value);
             })
             .catch(function (error) {
                 console.log(error);

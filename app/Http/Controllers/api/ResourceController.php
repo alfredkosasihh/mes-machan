@@ -30,39 +30,52 @@ class ResourceController extends Controller
         $data = request()->only('date_start', 'date_end','time_start', 'time_end', 'completion_status', 'message_status', 'manufacturing_status', 'machine');
         
         $datas = $this->machinePerformanceRepo->searchdate($data);
-
+        
+        
         if (!empty($data['message_status'])){
             $datas = $datas->where('message_status', $data['message_status']);
+        } else {
+            $data['message_status'] = "";
         }
         
         if (!empty($data['completion_status'])){
             $datas = $datas->where('completion_status', $data['completion_status']);
-        } 
+        } else {
+            $data['completion_status'] = "";
+        }
 
         if (!empty($data['manufacturing_status'])){
             $datas = $datas->where('manufacturing_status', $data['manufacturing_status']);
+        } else {
+            $data['manufacturing_status'] = "";
         }
 
         if (!empty($data['machine'])){
             $datas = $datas->where('machine', $data['machine']);
+        } else {
+            $data['machine'] = "";
         }
 
         if (!empty($data['time_start'])){
             $datas = $datas->where('time', '>=', $data['time_start']);
+        } else {
+            $data['time_start'] = "";
         }
 
         if (!empty($data['time_end'])){
             $datas = $datas->where('time', '<=', $data['time_end']);
+        } else {
+            $data['time_end'] = "";
         }
 
         if (!empty($data['time_start']) && !empty($data['time_end'])){
             $datas = $datas->whereBetween('time', [$data['time_start'], $data['time_end']]);
-        }
+        } 
         
         $datas = $datas->paginate(100);
         
         if($datas){
-            return view('searchmachineperformance', ['datas' => $datas, 'data' => $data]);
+            return view('searchmachineperformance', ['datas' => $datas, 'the_last_data' => $data]);
         }
         return view('machineperformance');
     }

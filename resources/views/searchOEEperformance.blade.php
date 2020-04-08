@@ -93,13 +93,13 @@
                                     <label class="control-label">OEE績效統計日期查詢</label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input type="date" name="date_start" class="clearable form-control" required>
+                                        <input type="date" name="date_start" id="date_start" class="clearable form-control" required>
                                     </div>
                                     <div class="col-md-1 textcenter">
                                         <label class="control-label"> ~ </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input type="date" name="date_end" class="clearable form-control" required>
+                                        <input type="date" name="date_end" id="date_end" class="clearable form-control" required>
                                     </div>
                                 </div>
                                 <hr>
@@ -199,6 +199,10 @@
     </div>
 </div>
 <script>
+     window.onload = function(){
+        document.getElementById('date_start').value = "{{$date['date_start']}}";
+        document.getElementById('date_end').value = "{{$date['date_end']}}";
+     }
     const getMachineDefiniton = () => {
         axios.get("{{ route('getMachineDefinition') }}")
         .then(({ data }) => {

@@ -80,9 +80,9 @@
             <span class="space-item">></span>
             <a href="{{ route('show_machineperformance') }}">機台績效</a><span>
             <span class="space-item">></span>
-            <span class="space-item">{{ $data['date_start']}}<span>
+            <span class="space-item">{{ $the_last_data['date_start']}}<span>
             <span class="space-item">~</span>
-            <span class="space-item">{{ $data['date_end']}}<span>
+            <span class="space-item">{{ $the_last_data['date_end']}}<span>
         </ol>
         <div class="row">
             <div class="col-md-12">
@@ -95,13 +95,13 @@
                                         <label class="control-label">機台績效日期查詢</label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input type="date" name="date_start" class="clearable form-control" required>
+                                        <input type="date" name="date_start" id ="date_start" class="clearable form-control" required>
                                     </div>
                                     <div class="col-md-2 textcenter">
                                         <label class="control-label"> ~ </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input type="date" name="date_end" class="clearable form-control" required>
+                                        <input type="date" name="date_end" id="date_end" class="clearable form-control" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -109,8 +109,8 @@
                                             <label class="control-label">訊息狀態</label>
                                     </div>
                                     <div class="col-md-10 textcenter">
-                                        <select name="message_status"  class="clearable form-control">
-                                            <option disabled selected>---請選擇---</option>
+                                        <select name="message_status"  id="message_status" class="clearable form-control">
+                                            <option disabled value="" selected>---請選擇---</option>
                                             <option value="訂單開始">訂單開始</option>
                                             <option value="訂單結束">訂單結束</option>
                                             <option value="外部停止">外部停止</option>
@@ -142,8 +142,8 @@
                                             <label class="control-label">完工狀態</label>
                                     </div>
                                     <div class="col-md-10 textcenter">
-                                        <select name="completion_status" class="clearable form-control">
-                                            <option disabled selected>---請選擇---</option>
+                                        <select name="completion_status" id="completion_status" class="clearable form-control">
+                                            <option disabled value="" selected>---請選擇---</option>
                                             <option value="正常生產">正常生產</option>
                                             <option value="異常">異常</option>
                                             <option value="不正常">不正常</option>
@@ -155,8 +155,8 @@
                                             <label class="control-label">生產狀態</label>
                                     </div>
                                     <div class="col-md-10 textcenter">
-                                        <select name="manufacturing_status" class="clearable form-control">
-                                        <option disabled selected>---請選擇---</option>
+                                        <select name="manufacturing_status" id="manufacturing_status" class="clearable form-control">
+                                        <option disabled value=""selected>---請選擇---</option>
                                             <option value="上班">上班</option>
                                             <option value="休息">休息</option>
                                             <option value="異常">異常</option>
@@ -181,8 +181,8 @@
                                             <label class="control-label">時間區間</label>
                                     </div>
                                     <div class="col-md-4">
-                                        <select name="time_start" class="clearable form-control">
-                                            <option disabled selected>---請選擇---</option>
+                                        <select name="time_start" id="time_start" class="clearable form-control">
+                                            <option disabled value="" selected>---請選擇---</option>
                                             <option value="01:00">01:00</option>
                                             <option value="02:00">02:00</option>
                                             <option value="03:00">03:00</option>
@@ -213,8 +213,8 @@
                                         <label class="control-label"> ~ </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <select name="time_end" class="clearable form-control">
-                                        <option disabled selected>---請選擇---</option>
+                                        <select name="time_end" id="time_end" class="clearable form-control">
+                                        <option disabled value="" selected>---請選擇---</option>
                                             <option value="01:00">01:00</option>
                                             <option value="02:00">02:00</option>
                                             <option value="03:00">03:00</option>
@@ -358,6 +358,15 @@
     </div>
 </div>
 <script>
+    window.onload = function(){
+        document.getElementById('date_start').value = "{{$the_last_data['date_start']}}";
+        document.getElementById('date_end').value = "{{$the_last_data['date_end']}}";
+        document.getElementById('message_status').value = "{{$the_last_data['message_status']}}";
+        document.getElementById('completion_status').value = "{{$the_last_data['completion_status']}}";
+        document.getElementById('manufacturing_status').value = "{{$the_last_data['manufacturing_status']}}";
+        document.getElementById('time_start').value = "{{$the_last_data['time_start']}}";
+        document.getElementById('time_end').value = "{{$the_last_data['time_end']}}";
+    }
     const getMachineDefiniton = () => {
         axios.get("{{ route('getMachineDefinition') }}")
         .then(({ data }) => {
@@ -370,6 +379,7 @@
                     <option value="${data.machine_name}">${data.machine_name}</option>
                 `);
             })
+            document.getElementById('machines').value = "{{$the_last_data['machine']}}";
         });
     }
     getMachineDefiniton();

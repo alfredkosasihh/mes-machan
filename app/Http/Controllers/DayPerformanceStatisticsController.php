@@ -31,17 +31,18 @@ class DayPerformanceStatisticsController extends Controller
 
         if (!empty($data['machine_name'])){
             $datas = $datas->where('machine_name', $data['machine_name']);
+        } else {
+            $data['machine_name'] = "";
         }
         if (!empty($data['material_name'])){
             $datas = $datas->where('material_name', $data['material_name']);
+        } else {
+            $data['material_name'] = "";
         }
         
         $datas = $datas->paginate(100);
-
-        $date = request()->only('date_start' , 'date_end');
-
             if($datas){
-                return view('searchdayperformance', ['datas' => $datas, 'date' => $date]);
+                return view('searchdayperformance', ['datas' => $datas, 'the_last_data' => $data]);
             }
             return view('dayperformance');
     }

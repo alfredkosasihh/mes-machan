@@ -78,9 +78,9 @@
             <span class="space-item">
             <a href="{{ route('show_dayperformance') }}">機台日績效統計</a><span>
             <span class="space-item">></span>
-            <span class="space-item">{{$date['date_start']}}<span>
+            <span class="space-item">{{$the_last_data['date_start']}}<span>
             <span class="space-item">~</span>
-            <span class="space-item">{{$date['date_end']}}<span>
+            <span class="space-item">{{$the_last_data['date_end']}}<span>
         </ol>
         <div class="row">
             <div class="col-md-12">
@@ -93,13 +93,13 @@
                                             <label class="control-label">機台日績效統計日期查詢</label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input type="date" name="date_start" class="clearable form-control" required>
+                                        <input type="date" name="date_start" id="date_start" class="clearable form-control" required>
                                     </div>
                                     <div class="col-md-1 textcenter">
                                         <label class="control-label"> ~ </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input type="date" name="date_end" class="clearable form-control" required>
+                                        <input type="date" name="date_end" id="date_end" class="clearable form-control" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -107,7 +107,7 @@
                                             <label class="control-label">機台</label>
                                     </div>
                                     <div class="col-md-10 textcenter">
-                                        <select name="machine_name" id="machines"  class="clearable form-control">
+                                        <select name="machine_name" id="machines" value="" class="clearable form-control">
                                         </select>
                                     </div>
                                 </div>
@@ -116,7 +116,7 @@
                                             <label class="control-label">物料代碼</label>
                                     </div>
                                     <div class="col-md-10 textcenter">
-                                        <input type="text" name="material_name" class="clearable form-control">
+                                        <input type="text" name="material_name" id="material_name" class="clearable form-control">
                                     </div>
                                 </div>
                                 <hr>
@@ -233,6 +233,12 @@
     </div>
 </div>
 <script>
+    window.onload = function(){
+        document.getElementById('date_start').value = "{{$the_last_data['date_start']}}";
+        document.getElementById('date_end').value = "{{$the_last_data['date_end']}}";
+        document.getElementById('material_name').value = "{{$the_last_data['material_name']}}";
+    }
+
     const getMachineDefiniton = () => {
         axios.get("{{ route('getMachineDefinition') }}")
         .then(({ data }) => {
@@ -245,6 +251,7 @@
                     <option value="${data.machine_name}">${data.machine_name}</option>
                 `);
             })
+            document.getElementById('machines').value = "{{$the_last_data['machine_name']}}";
         });
     }
     getMachineDefiniton();
