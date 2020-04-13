@@ -511,32 +511,35 @@ class MachinePerformanceService
     {
         $status = $this->downtime($data);
         $findLessId =  $this->rollerDataRepo->findLessId($data);
-        $findResourceId = $this->machinePerformanceRepo->findResourceId($status, $findLessId);
+        $findResourceId = $this->machinePerformanceRepo->findResourceId($findLessId);
+        $findStopCount = $findResourceId->where('stop_count', $status->start_count)->get();
 
         $refue_time = '';
         $aggregate_time = '';
         if ($status->refueling_end == '') {
             $refue_time = '';
         } else {
-            if ($findResourceId->count() == 0) {
+            if ($findStopCount->count() == 0) {
                 $refue_time = "00:00:00";
             } else {
                 $sumtime = 0;
-                foreach ($findResourceId as $sumitem) {     
+                foreach ($findStopCount as $sumitem) {     
                     $sumitemSec = strtotime($sumitem->down_time) - strtotime(Carbon::today());
                     $refue_time = $sumtime + $sumitemSec;
                 }
             }
         }
-        
+
+        $findStartCount = $findResourceId->where('start_count', $status->stop_count)->get();
+
         if ($status->aggregate_end == '') {
             $aggregate_time = '';
         } else {
-            if ($findResourceId->count() == 0) {
+            if ($findStartCount->count() == 0) {
                 $aggregate_time = "00:00:00";
             } else {
                 $sumtime = 0;
-                foreach ($findResourceId as $sumitem) {
+                foreach ($findStartCount as $sumitem) {
                     $sumitemSec = strtotime($sumitem->down_time) - strtotime(Carbon::today());
                     $aggregate_time = $sumtime + $sumitemSec;
                 }

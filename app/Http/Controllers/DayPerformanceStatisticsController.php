@@ -73,7 +73,6 @@ class DayPerformanceStatisticsController extends Controller
 
                 $dayPerfor['production_category'] = '量產';
                 
-                
                 //標準ct
                 $dayPerfor['standard_processing'] = $this->SumRepo->standard_processing($dayPerfor); 
                 $dayPerfor['standard_updown'] =  $this->SumRepo->standard_updown($dayPerfor); 
@@ -95,7 +94,6 @@ class DayPerformanceStatisticsController extends Controller
                 $performance_exclusion_time = $this->SumRepo->performance_exclusion_time($dayPerfor);
                 $dayPerfor = array_merge($dayPerfor, $performance_exclusion_time);
         
-
                 DayPerformanceStatistics::updateOrCreate(
                     [   'report_work_date' => $dayPerfor['report_work_date'], 
                         'material_name' => $dayPerfor['material_name']

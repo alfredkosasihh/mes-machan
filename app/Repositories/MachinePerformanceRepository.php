@@ -138,9 +138,9 @@
             )->get();
         }
 
-        public function findResourceId($status, $findLessId)
+        public function findResourceId($findLessId)
         {
-            return Summary::whereIn('resources_id', $findLessId)->where('refueling_start', $status->refueling_end)->get();
+            return Summary::whereIn('resources_id', $findLessId);
         }
 
         public function findRefuelingStart($status)
@@ -216,7 +216,7 @@
 
         public function searchdate($data)
         {
-            return Summary::whereBetween('date', [$data['date_start'], $data['date_end']]);
+            return Summary::with('resource')->whereBetween('date', [$data['date_start'], $data['date_end']]);
         }
     }
 ?>

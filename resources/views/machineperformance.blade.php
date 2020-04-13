@@ -171,6 +171,14 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-2 textcenter">
+                                            <label class="control-label">物料代碼</label>
+                                    </div>
+                                    <div class="col-md-10 textcenter">
+                                        <input type="text" name="orderno" class="clearable form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-2 textcenter">
                                             <label class="control-label">時間區間</label>
                                     </div>
                                     <div class="col-md-4">

@@ -178,6 +178,14 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-2 textcenter">
+                                            <label class="control-label">物料代碼</label>
+                                    </div>
+                                    <div class="col-md-10 textcenter">
+                                        <input type="text" id="orderno" name="orderno" class="clearable form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-2 textcenter">
                                             <label class="control-label">時間區間</label>
                                     </div>
                                     <div class="col-md-4">
@@ -263,6 +271,7 @@
                         <th scope="col">單元</th>
                         <th scope="col">異常狀態</th>
                         <th scope="col">No</th>
+                        <th scope="col">物料代碼</th>
                         <th scope="col">當天序號</th>
                         <th scope="col">開機</th>
                         <th scope="co1">關機</th>
@@ -312,6 +321,7 @@
                         <td>{{ $data->type }}</td>
                         <td>{{ $data->abnormal }}</td>
                         <td>{{ $data->serial_number }}</td>
+                        <td>{{ $data->resource->orderno }}</td>
                         <td>{{ $data->serial_number_day }}</td>
                         <td>{{ $data->open }}</td>
                         <td>{{ $data->turn_off }}</td>
@@ -364,6 +374,7 @@
         document.getElementById('message_status').value = "{{$the_last_data['message_status']}}";
         document.getElementById('completion_status').value = "{{$the_last_data['completion_status']}}";
         document.getElementById('manufacturing_status').value = "{{$the_last_data['manufacturing_status']}}";
+        document.getElementById('orderno').value = "{{$the_last_data['orderno']}}";
         document.getElementById('time_start').value = "{{$the_last_data['time_start']}}";
         document.getElementById('time_end').value = "{{$the_last_data['time_end']}}";
     }

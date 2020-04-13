@@ -173,7 +173,7 @@ class OEEperformanceRepository
         }else{
             foreach($getSameDay as $key =>$data){
                 if($data->total_downtime != '00:00:00'){
-                    $down_time = strtotime($data->down_time) - strtotime(Carbon::today());
+                    $down_time = strtotime($data->total_downtime) - strtotime(Carbon::today());
                     $sum_total_downtime = $sum_total_downtime + $down_time;
                 }
             }
