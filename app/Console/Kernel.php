@@ -27,8 +27,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('raw-data:get')->withoutOverlapping(60);
         $schedule->command('machine-data:get')->withoutOverlapping(60);
         // $schedule->call('App\Http\Controllers\api\ResourceController@fixmachinedatabase')->name('machinedata')->withoutOverlapping(60); //每小時一次
-        $schedule->call('App\Http\Controllers\DayPerformanceStatisticsController@getmachineperformance')->everyThirtyMinutes(); //抓日績效
-        $schedule->call('App\Http\Controllers\OEEperformanceController@getOEEperformance')->everyThirtyMinutes(); //當日OEE
+        // $schedule->call('App\Http\Controllers\DayPerformanceStatisticsController@getmachineperformance')->everyThirtyMinutes(); //抓日績效
+        // $schedule->call('App\Http\Controllers\OEEperformanceController@getOEEperformance')->everyThirtyMinutes(); //當日OEE
+        $schedule->command('dayPerfor-data:get')->withoutOverlapping(30);
+        $schedule->command('OEE-data:get')->withoutOverlapping(30);
     }
 
     /**

@@ -102,13 +102,13 @@ class OEEperformanceRepository
         // total_hours
         if($work['work_name'] == '正常班'){
 
-        $total_hours = 0;
-        $totalTime = DayPerformanceStatistics::where('report_work_date', $work['date'])->select('total_hours')->distinct()->get();
-        
-        foreach($totalTime as $key =>$datas){
-            $total_hours += strtotime($datas->total_hours) - strtotime(Carbon::today());
-        }
-        $work['total_hours'] = date("H:i:s", ($total_hours)-8*60*60);
+            $total_hours = 0;
+            $totalTime = DayPerformanceStatistics::where('report_work_date', $work['date'])->select('total_hours')->distinct()->get();
+            
+            foreach($totalTime as $key =>$datas){
+                $total_hours += strtotime($datas->total_hours) - strtotime(Carbon::today());
+            }
+            $work['total_hours'] = date("H:i:s", ($total_hours)-8*60*60);
 
         }elseif($work['work_name'] == '休假' || $work['work_name'] == '國定假日'){
             $work['total_hours'] = '00:00:00';
@@ -344,7 +344,7 @@ class OEEperformanceRepository
         $sum_machine_downtime = 0; 
         foreach($getSameDay as $key =>$data){
             if($data->machine_downtime != "00:00:00"){
-                $machine_downtime = strtotime($data->break_time) - strtotime(Carbon::today()); //將字串改為時間戳  之後再相減進行校正
+                $machine_downtime = strtotime($data->machine_downtime) - strtotime(Carbon::today()); //將字串改為時間戳  之後再相減進行校正
                 $sum_machine_downtime = $sum_machine_downtime + $machine_downtime;
             }
         }
@@ -380,14 +380,14 @@ class OEEperformanceRepository
         foreach($sameday as $key =>$datas){
             $machine_utilization_rate = $machine_utilization_rate + $datas->machine_utilization_rate;
         }
-        $machine_performance['machine_utilization_rate'] = floor(($machine_utilization_rate/count($sameday))*100)/100;
+        $machine_performance['machine_utilization_rate'] = round(($machine_utilization_rate/count($sameday)), 2);
 
         
         $performance_rate = 0;
         foreach($sameday as $key =>$datas){
             $performance_rate = $performance_rate + $datas->performance_rate;
         }
-        $machine_performance['performance_rate'] = floor(($performance_rate/count($sameday))*100)/100;
+        $machine_performance['performance_rate'] = round(($performance_rate/count($sameday)), 2);
 
 
         
@@ -395,7 +395,7 @@ class OEEperformanceRepository
         foreach($sameday as $key =>$datas){
             $yield = $yield + $datas->yield;
         }
-        $machine_performance['yield'] = floor(($yield/count($sameday))*100)/100;
+        $machine_performance['yield'] = round(($yield/count($sameday)), 2);
 
 
         
@@ -403,7 +403,7 @@ class OEEperformanceRepository
         foreach($sameday as $key =>$datas){
             $OEE = $OEE + $datas->OEE;
         }
-        $machine_performance['OEE'] = floor(($OEE/count($sameday))*100)/100;
+        $machine_performance['OEE'] = round(($OEE/count($sameday)), 2);
 
         return $machine_performance;
     }

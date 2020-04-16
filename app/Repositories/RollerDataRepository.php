@@ -30,7 +30,7 @@
 
         public function data()
         {
-            return Resource::where('flag', 0)->orderby('time')->get();
+            return Resource::where('flag', 0)->orderby('id')->get();
         }
     }
 

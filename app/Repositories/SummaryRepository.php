@@ -63,7 +63,6 @@ class SummaryRepository
 
             $first_time = strtotime($first_time) - strtotime(Carbon::today());
             $last_time = strtotime($last_time) - strtotime(Carbon::today());
-
             return round(($last_time - $first_time)/3600); //顯示小時
         }
     }
@@ -111,7 +110,6 @@ class SummaryRepository
 
         // standard_completion //個別料號分開計算 有問題
         $machine_works_number['standard_completion'] = (($dayPerfor['standard_working_hours'] * 3600) / ($dayPerfor['standard_processing'] + $dayPerfor['standard_updown']));
-
         // total_completion_that_day
         // COUNTIFS( 捲料機績效分析!$C:$C, 9,   捲料機績效分析!$E:$E,機台日績效統計表!$B7,   捲料機績效分析!$B:$B,機台日績效統計表!$J7)
         foreach ($sameDayAndName_id9 as $key => $data) {
@@ -149,6 +147,7 @@ class SummaryRepository
         $sameDayAndName = Resource::where('orderno', $dayPerfor['material_name'])->where('date', $dayPerfor['report_work_date'])->with('summary')->get();
         $sameDay = Resource::where('date', $dayPerfor['report_work_date'])->with('summary')->get();
         $sum = 0;
+        $sum0 = 0;
         $sum1 = 0;
         $sum2 = 0;
 
@@ -189,6 +188,9 @@ class SummaryRepository
                     if ('換線' == $data->summary->abnormal) {
                         $time = strtotime($data->summary->working_time) - strtotime(Carbon::today());
                         $sum1 = $sum1 + $time;
+                    } else {
+                        $time = strtotime($data->summary->working_time) - strtotime(Carbon::today());
+                        $sum0 = $sum0 + $time;
                     }
                 }
                 foreach ($sameDayAndName as $key => $data) {
@@ -197,9 +199,8 @@ class SummaryRepository
                         $sum2 = $sum2 + $time;
                     }
                 }
-                $sum = $sum1 - $sum2;
+                $sum = $sum0 - $sum1 - $sum2;
                 return date("H:i:s", $sum - 8 * 60 * 60); //將時間戳轉回字串
-
             }
         }
     }
@@ -301,7 +302,6 @@ class SummaryRepository
         }
         $machinee_work_except_hours['chang_model_and_line'] = date("H:i:s", $chang_model_and_line - 8 * 60 * 60); //將時間戳轉回字串
 
-
         $machinee_work_except_hours['bad_disposal_time'] = '';  //由APP輸入或由機台自動判定除外工時(物料品質不良處置時間)
         $machinee_work_except_hours['model_damge_change_line_time'] = '';  //由APP輸入或由機台自動判定除外工時(模具損壞換線時間)
         $machinee_work_except_hours['program_modify_time'] = '';  //由APP輸入或由機台自動判定除外工時(程式修改時間)
@@ -355,27 +355,21 @@ class SummaryRepository
         $chang_model_and_line = strtotime($dayPerfor['chang_model_and_line']) - strtotime(Carbon::today());
         $updown_time = $dayPerfor['updown_time'];
 
-        $machine_utilization_rate = floor((($mass_production_time - $total_downtime - $updown_time - $chang_model_and_line) / ($mass_production_time))*100)/100;
+        $machine_utilization_rate = round((($mass_production_time - $total_downtime - $updown_time - $chang_model_and_line) / ($mass_production_time)), 2);
         $performance_exclusion_time['machine_utilization_rate'] = $machine_utilization_rate;
 
-        $performance_exclusion_time['performance_rate'] = floor(($dayPerfor['total_completion_that_day'] / $dayPerfor['standard_completion'])*100)/100;
+        $performance_exclusion_time['performance_rate'] = round(($dayPerfor['total_completion_that_day'] / $dayPerfor['standard_completion']), 2);
 
         //yield  ($total_completion_that_day - $adverse_number)/($total_completion_that_day)
 
         if($dayPerfor['total_completion_that_day'] == 0){
             $performance_exclusion_time['yield'] = 0;
         }else{
-            $performance_exclusion_time['yield'] = floor(($dayPerfor['total_completion_that_day'] - $dayPerfor['adverse_number']) / ($dayPerfor['total_completion_that_day'])*100)/100;
+            $performance_exclusion_time['yield'] = round((($dayPerfor['total_completion_that_day'] - $dayPerfor['adverse_number']) / ($dayPerfor['total_completion_that_day'])),2);
         }
 
-        $performance_exclusion_time['OEE'] = floor(($performance_exclusion_time['machine_utilization_rate'] * $performance_exclusion_time['performance_rate'] * $performance_exclusion_time['yield'])*100)/100;
+        $performance_exclusion_time['OEE'] = round(($performance_exclusion_time['machine_utilization_rate'] * $performance_exclusion_time['performance_rate'] * $performance_exclusion_time['yield']), 2);
 
         return $performance_exclusion_time;
     }
-
-    // public function data()//當日最後一筆
-    // {
-    //   summary::orderby('created_at' , 'desc')->with('resource')->first();   
-    // }
-
 }

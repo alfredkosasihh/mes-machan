@@ -11,14 +11,28 @@
             return Summary::where('open', '1')->first();
         }
        
-        public function getBeforeData()
+        public function checkUnfinish($data)
         {
             $count = Summary::with('resource')->whereRaw('id = (select max(`id`) from summaries)')->first(); //前一筆資料
-
             if ($count == null) {
                 return Summary::create(['resources_id' => 0, 'description' => '', 'processing_start_time' => '00:00:00', 'processing_completion_time' => '00:00:00']);
+            } else {
+                if ($count->resource->date != $data['date']){
+                    $count->open = 0;
+                    $count->turn_off = 0;   
+                    $count->start_count = 0;
+                    $count->stop_count = 0;
+                    $count->refueling_start = 0;
+                    $count->refueling_end = 0;
+                    $count->aggregate_start = 0;
+                    $count->aggregate_end = 0;
+                    $count->machine_completion_day = 0;
+                    $count->machine_inputs_day = 0;
+                    $count->sensro_inputs = 0;
+                    $count->second_completion = 0;
+                }
             }
-            
+
             return $count;
         }
 

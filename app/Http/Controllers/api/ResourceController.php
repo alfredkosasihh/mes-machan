@@ -76,6 +76,8 @@ class ResourceController extends Controller
             $datas->whereHas('resource',function ($query) use ($data){
                     $query->where('orderno', $data['orderno']);
             });
+        } else {
+            $data['orderno'] = "";
         }
         
         $datas = $datas->paginate(100);

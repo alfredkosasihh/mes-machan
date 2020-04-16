@@ -24,24 +24,12 @@ class MachinePerformanceService
 
     public function counts($data)
     {
-        $count = $this->machinePerformanceRepo->getBeforeData();
+        $count = $this->machinePerformanceRepo->checkUnfinish($data);
         $machine = $this->rollerDataService->machine($data);
         $count->id = $count->id + 1;
         $count->serial_number++;
      
         if ($count->resources_id == 0 || $data['date'] != $count['date']) { 
-            $count->open = 0;
-            $count->turn_off = 0;   
-            $count->start_count = 0;
-            $count->stop_count = 0;
-            $count->refueling_start = 0;
-            $count->refueling_end = 0;
-            $count->aggregate_start = 0;
-            $count->aggregate_end = 0;
-            $count->machine_completion_day = 0;
-            $count->machine_inputs_day = 0;
-            $count->sensro_inputs = 0;
-            $count->second_completion = 0;
             
             $data['status_id'] == 3 ? $count->open++ : ($count->open == 0 ? $count->open : $count->open = '');
             $data['status_id'] == 4 ? $count->turn_off++ : ($count->turn_off == 0 ? $count->turn_off : $count->turn_off = '');
