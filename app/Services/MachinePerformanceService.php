@@ -517,7 +517,6 @@ class MachinePerformanceService
                 }
             }
         }
-
         $findStartCount = $findResourceId->where('start_count', $status->stop_count)->get();
 
         if ($status->aggregate_end == '') {
@@ -533,10 +532,13 @@ class MachinePerformanceService
                 }
             }
         }
-        
+	
+       	$refue_time == ''? : $refue_time == "00:00:00" ? : $refue_time = date("H:i:s", $refue_time - 8 * 60 * 60);
+	$aggregate_time == ''? :$aggregate_time =="00:00:00" ? : $refue_time = date("H:i:s", $aggregate_time - 8 * 60 * 60);
+	
         $status->refueling_time = $refue_time;
         $status->aggregate_time = $aggregate_time;
-
+	
         return $status;
     }
 
@@ -571,7 +573,7 @@ class MachinePerformanceService
 
         $status['refueler_time'] = $refueling;
         $status['collector_time'] = $aggregate;
-      
+      	
         $status->resources_id = $data->id;
         unset($status['resource']);
         

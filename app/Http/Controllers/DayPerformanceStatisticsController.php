@@ -137,12 +137,7 @@ class DayPerformanceStatisticsController extends Controller
                         'yield' => $dayPerfor['yield'],
                         'OEE' => $dayPerfor['OEE'],
                     ] );
-            }
-            
+            }       
         }
     }
-
-
-    
-    
 }

@@ -17,7 +17,7 @@
             if ($count == null) {
                 return Summary::create(['resources_id' => 0, 'description' => '', 'processing_start_time' => '00:00:00', 'processing_completion_time' => '00:00:00']);
             } else {
-                if ($count->resource->date != $data['date']){
+                if ( $count->resource == null || $count->resource->date != $data['date']){
                     $count->open = 0;
                     $count->turn_off = 0;   
                     $count->start_count = 0;
@@ -168,7 +168,7 @@
         }
 
         public function create($data)
-        {
+        {	
             return Summary::create($data);
         }
 
